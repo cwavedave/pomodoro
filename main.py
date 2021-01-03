@@ -9,23 +9,36 @@ FONT_NAME = "Courier"
 WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
-
+reps = 0
 # ---------------------------- TIMER RESET ------------------------------- # 
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 def timer_engage():
-    countdown(5 * 60)
+    global reps
+    reps += 1
+    print(reps)
+    if reps % 8 == 0:
+        countdown(LONG_BREAK_MIN * 60)
+    elif reps % 2 == 0:
+        countdown(SHORT_BREAK_MIN * 60)
+    else:
+        countdown(WORK_MIN*60)
+
 # ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
 
-
 def countdown(count):
-
     count_min = math.floor(count / 60)
     count_sec = count % 60
+
+    if count_sec < 10:
+        count_sec = f"0{count_sec}"
 
     canvas.itemconfig(timer,text=f"{count_min}:{count_sec}")
     if count > 0:
         window.after(1000,countdown,count - 1)
+    else:
+        timer_engage()
+
 # ---------------------------- UI SETUP ------------------------------- #
 
 window = Tk()
@@ -53,4 +66,3 @@ label_tick = Label(text="✅",bg=YELLOW)
 label_tick.grid(column=1,row=4)
 
 window.mainloop()
-
